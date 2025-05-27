@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Yearbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Visualization & Content Choices:
+        - Site Info (Title, Program Name from site_settings.json) -> Goal: Inform/Brand -> Presentation: Text in Header (HTML/Tailwind) -> Interaction: Static -> Justification: Standard site branding.
+        - Student Listing (from student_profiles collection) -> Goal: Overview/Navigate -> Presentation: Grid of Student Cards (HTML/Tailwind) -> Interaction: Click card to view profile detail -> Justification: Visual scan, easy access to details. Card shows profileImage, studentName, key detail.
+        - Student Profile Details (from individual student .md files) -> Goal: Inform/Detail -> Presentation: Structured text and image layout (HTML/Tailwind) -> Interaction: Static display of all defined fields -> Justification: Clear presentation of student information.
+        - Profile Images (profileImage field) -> Goal: Visual ID -> Presentation: HTML <img> -> Interaction: Static -> Justification: Essential yearbook element. Using placeholders.
+        - Rich Text Fields (bioOrAspirations, thankYouMessage) -> Goal: Personal Expression -> Presentation: Rendered HTML within text blocks -> Interaction: Static -> Justification: Allows formatted text as intended by PagesCMS.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* stone-100 */
+            color: #292524; /* stone-800 */
+        }
+        .header-font {
+            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+        }
+        .yearbook-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .yearbook-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Basic scrollbar styling for profile content if it overflows */
+        .profile-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .profile-content::-webkit-scrollbar-track {
+            background: #e7e5e4; /* stone-200 */
+        }
+        .profile-content::-webkit-scrollbar-thumb {
+            background-color: #a8a29e; /* stone-400 */
+            border-radius: 4px;
+        }
+        .profile-content::-webkit-scrollbar-thumb:hover {
+            background-color: #78716c; /* stone-500 */
+        }
+        .rich-text-content p { margin-bottom: 0.75rem; }
+        .rich-text-content ul { list-style-position: inside; list-style-type: disc; margin-bottom: 0.75rem; margin-left: 1rem;}
+        .rich-text-content ol { list-style-position: inside; list-style-type: decimal; margin-bottom: 0.75rem; margin-left: 1rem;}
+        .rich-text-content strong { font-weight: bold; }
+        .rich-text-content em { font-style: italic; }
+
+    </style>
+</head>
+<body>
+    <div id="app" class="min-h-screen flex flex-col">
+
+        <header class="bg-sky-700 text-white shadow-lg sticky top-0 z-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex flex-col sm:flex-row justify-between items-center">
+                    <div>
+                        <h1 id="yearbookTitle" class="header-font text-3xl font-bold"></h1>
+                        <p id="programName" class="text-sky-100 text-sm"></p>
+                    </div>
+                    <nav class="mt-2 sm:mt-0">
+                        <a href="#" id="homeLink" class="px-3 py-2 rounded-md hover:bg-sky-600 transition-colors">All Students</a>
+                        </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+
+            <div id="listViewPage">
+                <h2 class="header-font text-2xl text-sky-800 font-semibold mb-6" id="siteDescription"></h2>
+                <div id="studentGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    </div>
+            </div>
+
+            <div id="profileViewPage" class="hidden">
+                <button id="backToListButton" class="mb-6 bg-sky-600 text-white px-4 py-2 rounded-md hover:bg-sky-700 transition-colors flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Back to All Students
+                </button>
+
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-xl">
+                    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+                        <div class="lg:w-1/3 flex-shrink-0">
+                            <img id="profileImageDetail" src="" alt="Profile Picture" class="w-full h-auto max-h-[400px] lg:max-h-[500px] object-cover rounded-lg shadow-md border-4 border-white">
+                        </div>
+
+                        <div class="lg:w-2/3 profile-content overflow-y-auto max-h-[calc(100vh-200px)] pr-2">
+                            <h2 id="profileStudentName" class="header-font text-4xl text-sky-800 font-bold mb-1"></h2>
+                            <p class="text-lg text-stone-600 mb-1"><strong class="text-stone-700">School:</strong> <span id="profileSchoolName"></span></p>
+                            <p class="text-lg text-stone-600 mb-1">
+                                <strong class="text-stone-700">Grade/Year:</strong> <span id="profileCurrentGradeLevel"></span>
+                                <span id="profileGraduationYearExpected" class="ml-1"></span>
+                            </p>
+                            <p class="text-lg text-stone-600 mb-4"><strong class="text-stone-700">Major/Field:</strong> <span id="profileMajorOrFieldOfStudy"></span></p>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="header-font text-xl text-sky-700 font-semibold border-b-2 border-sky-200 pb-1 mb-2">Biography & Aspirations</h3>
+                                    <div id="profileBioOrAspirations" class="text-stone-700 rich-text-content"></div>
+                                </div>
+                                <div>
+                                    <h3 class="header-font text-xl text-sky-700 font-semibold border-b-2 border-sky-200 pb-1 mb-2">Hobbies & Interests</h3>
+                                    <p id="profileHobbiesAndInterests" class="text-stone-700"></p>
+                                </div>
+                                <div>
+                                    <h3 class="header-font text-xl text-sky-700 font-semibold border-b-2 border-sky-200 pb-1 mb-2">Favorite Quote</h3>
+                                    <blockquote id="profileFavoriteQuote" class="text-stone-700 italic border-l-4 border-sky-300 pl-4 py-2 bg-sky-50 rounded-r-md"></blockquote>
+                                </div>
+                                <div>
+                                    <h3 class="header-font text-xl text-sky-700 font-semibold border-b-2 border-sky-200 pb-1 mb-2">Message of Thanks</h3>
+                                    <div id="profileThankYouMessage" class="text-stone-700 rich-text-content"></div>
+                                </div>
+                                <div>
+                                    <h3 class="header-font text-xl text-sky-700 font-semibold border-b-2 border-sky-200 pb-1 mb-2">Program Start Date</h3>
+                                    <p id="profileProgramStartDate" class="text-stone-700"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-stone-800 text-stone-300 text-center p-6 mt-auto">
+            <p>&copy; <span id="currentYear"></span> <span id="footerProgramName"></span>. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Mock Data (simulating data from .pages.yml structure)
+        const siteSettings = {
+            yearbookTitle: "El Salvador Scholars Yearbook",
+            programName: "Future Leaders Scholarship Program",
+            siteDescription: "Celebrating the achievements and aspirations of our talented students."
+        };
+
+        const studentsData = [
+            {
+                slug: "maria-garcia-2024", // Example slug, would be from filename
+                studentName: "María José García Hernández",
+                profileImage: "https://placehold.co/400x500/E0E7FF/4338CA?text=Maria+G.", // Placeholder
+                graduationYearExpected: "2026 (University)",
+                currentGradeLevel: "Second Year University",
+                majorOrFieldOfStudy: "Ingeniería en Sistemas Computacionales",
+                schoolName: "Universidad Centroamericana 'José Simeón Cañas' (UCA)",
+                bioOrAspirations: "<p>María is a passionate advocate for technology and education. She dreams of developing software solutions to improve access to resources for underserved communities in El Salvador.</p><p>She is currently focusing on web development and AI.</p>",
+                hobbiesAndInterests: "Reading, programming, volunteering at local coding clubs, hiking.",
+                favoriteQuote: "\"The future belongs to those who believe in the beauty of their dreams.\" - Eleanor Roosevelt",
+                thankYouMessage: "<p>I am incredibly grateful to the Future Leaders Scholarship Program for their unwavering support. This opportunity has opened doors I never thought possible and has allowed me to pursue my passion for technology. Thank you to all the donors and mentors!</p>",
+                programStartDate: "2022-03-15"
+            },
+            {
+                slug: "carlos-rivera-2025",
+                studentName: "Carlos Alberto Rivera Cruz",
+                profileImage: "https://placehold.co/400x500/DBEAFE/1D4ED8?text=Carlos+R.",
+                graduationYearExpected: "2025 (University)",
+                currentGradeLevel: "Third Year University",
+                majorOrFieldOfStudy: "Medicina",
+                schoolName: "Universidad de El Salvador (UES)",
+                bioOrAspirations: "<p>Carlos is dedicated to becoming a doctor to serve his community. He is particularly interested in public health and preventative medicine.</p>",
+                hobbiesAndInterests: "Playing soccer, studying medical journals, community health outreach.",
+                favoriteQuote: "\"Wherever the art of Medicine is loved, there is also a love of Humanity.\" - Hippocrates",
+                thankYouMessage: "<p>Thank you to the program for believing in my dream to become a doctor. This scholarship is not just financial aid; it's a beacon of hope for me and my family.</p>",
+                programStartDate: "2021-02-01"
+            },
+            {
+                slug: "sofia-lemus-2027",
+                studentName: "Sofía Isabella Lemus Quintanilla",
+                profileImage: "https://placehold.co/400x500/D1FAE5/059669?text=Sofia+L.",
+                graduationYearExpected: "2027 (Bachillerato)",
+                currentGradeLevel: "10th Grade",
+                majorOrFieldOfStudy: "Bachillerato General",
+                schoolName: "Instituto Nacional Walter Thilo Deininger",
+                bioOrAspirations: "<p>Sofía is a bright and curious student with a love for literature and social sciences. She hopes to become a journalist to give voice to important stories in her country.</p>",
+                hobbiesAndInterests: "Writing, debate club, photography, learning new languages.",
+                favoriteQuote: "\"There is no greater agony than bearing an untold story inside you.\" - Maya Angelou",
+                thankYouMessage: "<p>I am so thankful for this scholarship. It allows me to focus on my studies and dream big. I hope to make my family and my community proud.</p>",
+                programStartDate: "2023-01-20"
+            },
+            {
+                slug: "javier-mendoza-2026",
+                studentName: "Javier Ernesto Mendoza López",
+                profileImage: "https://placehold.co/400x500/FEF3C7/D97706?text=Javier+M.",
+                graduationYearExpected: "2026 (University)",
+                currentGradeLevel: "Second Year University",
+                majorOrFieldOfStudy: "Arquitectura",
+                schoolName: "Universidad Albert Einstein",
+                bioOrAspirations: "<p>Javier is passionate about sustainable design and urban planning. He aims to create beautiful and functional spaces that respect the environment and improve people's lives.</p>",
+                hobbiesAndInterests: "Sketching, model building, history of architecture, cycling.",
+                favoriteQuote: "\"Form follows function - that has been misunderstood. Form and function should be one, joined in a spiritual union.\" - Frank Lloyd Wright",
+                thankYouMessage: "<p>This program has given me the tools and confidence to pursue my architectural dreams. I am deeply grateful for the support and mentorship provided.</p>",
+                programStartDate: "2022-04-10"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const yearbookTitleEl = document.getElementById('yearbookTitle');
+            const programNameEl = document.getElementById('programName');
+            const siteDescriptionEl = document.getElementById('siteDescription');
+            const studentGridEl = document.getElementById('studentGrid');
+            const listViewPageEl = document.getElementById('listViewPage');
+            const profileViewPageEl = document.getElementById('profileViewPage');
+            const backToListButtonEl = document.getElementById('backToListButton');
+            const homeLinkEl = document.getElementById('homeLink');
+            const currentYearEl = document.getElementById('currentYear');
+            const footerProgramNameEl = document.getElementById('footerProgramName');
+
+
+            // Populate site settings
+            yearbookTitleEl.textContent = siteSettings.yearbookTitle;
+            programNameEl.textContent = siteSettings.programName;
+            siteDescriptionEl.textContent = siteSettings.siteDescription;
+            currentYearEl.textContent = new Date().getFullYear();
+            footerProgramNameEl.textContent = siteSettings.programName;
+
+            // Function to show list view and hide profile view
+            function showListView() {
+                listViewPageEl.classList.remove('hidden');
+                profileViewPageEl.classList.add('hidden');
+                window.scrollTo(0, 0);
+            }
+
+            // Function to show profile view and hide list view
+            function showProfileView(studentSlug) {
+                const student = studentsData.find(s => s.slug === studentSlug);
+                if (student) {
+                    document.getElementById('profileImageDetail').src = student.profileImage;
+                    document.getElementById('profileImageDetail').alt = `Profile picture of ${student.studentName}`;
+                    document.getElementById('profileStudentName').textContent = student.studentName;
+                    document.getElementById('profileSchoolName').textContent = student.schoolName || 'N/A';
+                    document.getElementById('profileCurrentGradeLevel').textContent = student.currentGradeLevel || 'N/A';
+                    
+                    const gradYearEl = document.getElementById('profileGraduationYearExpected');
+                    if (student.graduationYearExpected && student.graduationYearExpected !== student.currentGradeLevel) {
+                        gradYearEl.textContent = `(Expected Graduation: ${student.graduationYearExpected})`;
+                        gradYearEl.classList.remove('hidden');
+                    } else {
+                        gradYearEl.classList.add('hidden');
+                    }
+                    
+                    document.getElementById('profileMajorOrFieldOfStudy').textContent = student.majorOrFieldOfStudy || 'N/A';
+                    document.getElementById('profileBioOrAspirations').innerHTML = student.bioOrAspirations || '<p>No biography provided.</p>';
+                    document.getElementById('profileHobbiesAndInterests').textContent = student.hobbiesAndInterests || 'No hobbies listed.';
+                    
+                    const quoteEl = document.getElementById('profileFavoriteQuote');
+                    if (student.favoriteQuote) {
+                        quoteEl.textContent = student.favoriteQuote;
+                        quoteEl.parentElement.classList.remove('hidden');
+                    } else {
+                        quoteEl.parentElement.classList.add('hidden');
+                    }
+                    
+                    document.getElementById('profileThankYouMessage').innerHTML = student.thankYouMessage || '<p>No message provided.</p>';
+                    
+                    const startDateEl = document.getElementById('profileProgramStartDate');
+                    if(student.programStartDate) {
+                        try {
+                            startDateEl.textContent = new Date(student.programStartDate + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                        } catch (e) {
+                            startDateEl.textContent = student.programStartDate; // fallback to raw string
+                        }
+                    } else {
+                        startDateEl.textContent = 'N/A';
+                    }
+
+                    listViewPageEl.classList.add('hidden');
+                    profileViewPageEl.classList.remove('hidden');
+                    window.scrollTo(0, 0);
+                } else {
+                    console.error("Student not found:", studentSlug);
+                    showListView(); // Fallback to list view if student not found
+                }
+            }
+
+            // Populate student grid
+            studentsData.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'yearbook-card bg-white p-4 rounded-lg shadow-md cursor-pointer flex flex-col items-center text-center border border-stone-200 hover:border-sky-500';
+                card.dataset.slug = student.slug;
+
+                const img = document.createElement('img');
+                img.src = student.profileImage;
+                img.alt = `Profile picture of ${student.studentName}`;
+                img.className = 'w-32 h-40 object-cover rounded-md mb-3 border-2 border-stone-200';
+
+                const name = document.createElement('h3');
+                name.className = 'header-font text-lg font-semibold text-sky-700';
+                name.textContent = student.studentName;
+
+                const detail = document.createElement('p');
+                detail.className = 'text-sm text-stone-600';
+                detail.textContent = student.currentGradeLevel || student.graduationYearExpected || student.majorOrFieldOfStudy;
+                
+                card.appendChild(img);
+                card.appendChild(name);
+                card.appendChild(detail);
+
+                card.addEventListener('click', () => showProfileView(student.slug));
+                studentGridEl.appendChild(card);
+            });
+
+            // Event listeners for navigation
+            backToListButtonEl.addEventListener('click', showListView);
+            homeLinkEl.addEventListener('click', function(e) {
+                e.preventDefault();
+                showListView();
+            });
+
+            // Initial view
+            showListView();
+        });
+    </script>
+</body>
+</html>
