@@ -8,26 +8,32 @@ content:
     label: Student Profiles
     path: src/content/students # Directory where student profile Markdown files will be stored
     type: collection
-    # ✅ FIX: Use the {primary} token which automatically uses the value from the 'primary' field below.
-    [cite_start]filename: '{year}-{month}-{day}-{primary}.md' [cite: 110]
+    # ✅ Use the {primary} token which automatically uses the value from the 'primary' field below.
+    filename: '{year}-{month}-{day}-{primary}.md'
     view:
-      [cite_start]fields: [studentName, status, graduationYearExpected, schoolName] [cite: 147]
-      # ✅ FIX: 'primary' key is nested inside 'view' and identifies which field to use for the {primary} token.
-      [cite_start]primary: studentName [cite: 149]
-      # ✅ FIX: 'sort' is an array of field names.
-      [cite_start]sort: [studentName] [cite: 151]
+      fields: [studentName, status, graduationYearExpected, schoolName]
+      # ✅ 'primary' key is nested inside 'view' and identifies which field to use for the {primary} token.
+      primary: studentName
+      # ✅ 'sort' is an array of field names.
+      sort: [studentName]
+    
+    # ✅ THIS IS THE CRITICAL PART THAT WAS MISSING.
+    # It defines all the input fields for the editor.
     fields:
       # --- Core Student Information ---
       - { name: studentName, label: Full Name, type: string, required: true }
-      # ✅ FIX: Changed 'media_folder' to the correct key 'path'.
-      - { name: profileImage, label: Profile Picture, type: image, options: { path: 'student_photos' } }
+      # ✅ Changed 'media_folder' to the correct key 'path' inside an 'options' object.
+      - name: profileImage
+        label: Profile Picture
+        type: image
+        options:
+          path: 'student_photos'
       - { name: birthday, label: Birthday, type: string }
 
       # --- Academic Details ---
       - name: status
         label: Academic Status
         type: select
-        # The 'values' key is correct here.
         options:
           values:
             - "Active Student"
