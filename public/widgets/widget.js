@@ -26,11 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {string} The HTML string for the student card.
      */
     const createStudentCard = (student, index) => {
-        // Use a placeholder image if a student photo is not available.
-        // The filename is URL-encoded to handle special characters like spaces.
-        const photoUrl = student.photo 
-            ? `${imageBaseUrl}${encodeURIComponent(student.photo)}` 
-            : `https://placehold.co/400x400/EBF4FF/7F9CF5?text=${encodeURIComponent(student.studentName.charAt(0))}`;
+        let photoUrl;
+        if (student.photo) {
+            // FIX: Extract only the filename from the path stored in the JSON.
+            // This prevents duplicating the path in the final URL.
+            const filename = student.photo.split('/').pop();
+            photoUrl = `${imageBaseUrl}${encodeURIComponent(filename)}`;
+        } else {
+            // Use a placeholder image if a student photo is not available.
+            photoUrl = `https://placehold.co/400x400/EBF4FF/7F9CF5?text=${encodeURIComponent(student.studentName.charAt(0))}`;
+        }
 
         // The card's HTML structure. It uses Tailwind CSS classes that will be applied by the host page.
         return `
