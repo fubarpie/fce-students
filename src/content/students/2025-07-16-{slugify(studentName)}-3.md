@@ -1,21 +1,10 @@
 ---
-studentName: Aleyda Del Rosario
-birthday: 02/23/2003
+studentName: Amy Sarai
+birthday: 01/30/2006
 status: Active Student
 schoolName: Univeridad de El Salvador
-majorOrFieldOfStudy: Industrial Engineering
+majorOrFieldOfStudy: Modern Languages
 currentGradeLevel: 3rd Year
-graduationYearExpected: "2028"
+graduationYearExpected: "2029"
 communityProject: Valores y Manualidades
-impactStatement: It is a great opportunity, because I'm learning new things,
-  seeing how many of my classmates are about to graduate motivates me to follow
-  their example. The program teaches us to support each other just as the
-  program is supporting us.
-aspirations: What I want to do after finishing university is work a dignified
-  job, help my family, and also contribute to my community so that other young
-  people can pursue their university studies. I hope to be an example for other
-  young people to follow.
-obstacles: One of the biggest obstacles is financial. In a time when all of our
-  classes have been moved online, not having access to a good computer or
-  reliable internet can make it difficult to continue our studies.
 ---
