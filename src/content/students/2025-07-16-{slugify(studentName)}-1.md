@@ -7,5 +7,5 @@ schoolName: Universidad de El Salvador
 majorOrFieldOfStudy: Computer Systems Engineering
 currentGradeLevel: 1st
 graduationYearExpected: "2030"
-communityProject: Agua Limpia
+communityProject: Agua Limpia2
 ---
