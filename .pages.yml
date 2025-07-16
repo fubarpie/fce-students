@@ -1,7 +1,7 @@
-#.pages.yml
+# .pages.yml
 media:
   input: public/uploads/media # Where PagesCMS saves uploaded files in the repo
-  output: /uploads/media    # How the SSG should reference these files
+  output: /uploads/media      # How the SSG should reference these files
 
 content:
   - name: student_profiles
@@ -9,23 +9,39 @@ content:
     path: src/content/students # Directory where student profile Markdown files will be stored
     type: collection
     fields:
+      # --- Core Student Information ---
       - { name: studentName, label: Full Name, type: string, required: true }
-      - { name: profileImage, label: Profile Picture, type: image, media_folder: 'student_photos' } # Optional: subfolder within media path
-      - { name: graduationYearExpected, label: Expected Graduation Year (University), type: string }
-      - { name: currentGradeLevel, label: Current Grade Level, type: string }
-      - { name: majorOrFieldOfStudy, label: Major / Field of Study, type: string }
+      - { name: profileImage, label: Profile Picture, type: image, media_folder: 'student_photos' }
+      - { name: birthday, label: Birthday, type: string }
+
+      # --- Academic Details ---
+      - name: status
+        label: Academic Status
+        type: select
+        options:
+          - Active Student
+          - Graduated
+          - Thesis/Internship
+          - Exam Pending
+        required: true
       - { name: schoolName, label: School / University Name, type: string }
-      - { name: bioOrAspirations, label: Biography / Aspirations, type: rich-text }
-      - { name: hobbiesAndInterests, label: Hobbies & Interests, type: text }
-      - { name: favoriteQuote, label: Favorite Quote, type: text }
-      - { name: thankYouMessage, label: Message of Thanks, type: rich-text }
-      - { name: programStartDate, label: Date Joined Program, type: date }
-      # Add other fields from Table 1 as needed
+      - { name: majorOrFieldOfStudy, label: Major or Field of Study, type: string }
+      - { name: currentGradeLevel, label: Current Grade Level or Year, type: string }
+      - { name: graduationYearExpected, label: Expected Graduation Year, type: string }
+
+      # --- Program & Personal Information ---
+      - { name: sponsors, label: Sponsors, type: text, description: "List each sponsor, separated by commas." }
+      - { name: communityProject, label: Community Project, type: string }
+
+      # --- Student's Story (from Q&A cards) ---
+      - { name: impactStatement, label: Impact of Scholarship, type: rich-text, description: "Answer to 'What impact has the scholarship program had on your life?'" }
+      - { name: aspirations, label: Future Aspirations, type: rich-text, description: "Answer to 'What do you want to do after finishing your degree?'" }
+      - { name: obstacles, label: Obstacles Encountered, type: rich-text, description: "Answer to 'What have been your biggest obstacles?'" }
+
+    # --- CMS Settings ---
     filename: '{year}-{month}-{day}-{slugify(studentName)}.md' # Generates filenames like "2024-05-15-maria-jose-garcia.md"
-                                                              # {slugify(studentName)} creates a URL-friendly version of the name.
-                                                              # Consider using a unique ID if names might not be unique.
-    view: # Optional: Customize how profiles are listed within the PagesCMS interface
-      fields: [studentName, graduationYearExpected, currentGradeLevel] # Fields visible in the list view
+    view:
+      fields: [studentName, status, graduationYearExpected, schoolName] # Fields visible in the list view
       primary: studentName # Field used as the main identifier in the list
       sort:
         - field: studentName
