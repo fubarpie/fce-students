@@ -1,11 +1,6 @@
 # This workflow compiles student markdown files into a single JSON file on push.
 name: Compile Student Content
 
-# --------------------------------------------------------------------------
-# TRIGGER
-# --------------------------------------------------------------------------
-# This workflow runs on any push event (new commits) that includes changes
-# in the 'src/content/students/' directory.
 on:
   push:
     branches:
@@ -13,68 +8,41 @@ on:
     paths:
       - 'src/content/students/**.md'
 
-# --------------------------------------------------------------------------
-# PERMISSIONS
-# --------------------------------------------------------------------------
-# Defines the permissions granted to the GITHUB_TOKEN for this workflow.
-# By default, no permissions are granted. We explicitly grant 'contents: write'
-# so the workflow can push the generated JSON file back to the repository.
 permissions:
   contents: write
 
-# --------------------------------------------------------------------------
-# JOBS
-# --------------------------------------------------------------------------
 jobs:
   build-and-commit:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     steps:
-      # -----------------
-      # STEP 1: Check out the repository code
-      # -----------------
-      # This action checks out your repository under $GITHUB_WORKSPACE,
-      # so your job can access it. We are pinning to a specific version tag.
       - name: Check out repository
         uses: actions/checkout@v4.1.1
 
-      # -----------------
-      # STEP 2: Set up Node.js
-      # -----------------
-      # This action sets up a Node.js environment for your workflow.
-      # We specify version 20.x and pin the action to a specific version tag.
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
           node-version: '20'
-          # Caching is removed because this project has no npm dependencies.
+          # Enable caching for npm. This will speed up future runs by
+          # saving the downloaded 'gray-matter' dependency.
+          cache: 'npm'
 
       # -----------------
-      # STEP 3: Run the compilation script
+      # THE MISSING STEP
       # -----------------
-      # This step executes the Node.js script you created earlier.
-      # It reads the markdown files and generates public/students.json.
+      # This step reads the package.json file and installs the dependencies
+      # defined there (i.e., gray-matter). This is what fixes the error.
+      - name: Install Dependencies
+        run: npm install
+
       - name: Run compilation script
         run: node ./scripts/compile-students.js
 
-      # -----------------
-      # STEP 4: Commit the generated JSON file
-      # -----------------
-      # This step checks if the 'public/students.json' file has changed.
-      # If it has, it commits the file back to your repository.
       - name: Commit generated JSON
         run: |
-          # Configure git with the bot's name and email
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          
-          # Add the generated file to the staging area
           git add public/students.json
-          
-          # Check for changes and commit if there are any
-          # The 'git diff' command will exit with 0 if no changes, 1 if changes.
-          # We use '|| exit 0' to prevent the workflow from failing if there are no changes.
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
