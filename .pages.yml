@@ -8,18 +8,28 @@ content:
     label: Student Profiles
     path: src/content/students # Directory where student profile Markdown files will be stored
     type: collection
+    # ✅ FIX: Use the {primary} token which automatically uses the value from the 'primary' field below.
+    [cite_start]filename: '{year}-{month}-{day}-{primary}.md' [cite: 110]
+    view:
+      [cite_start]fields: [studentName, status, graduationYearExpected, schoolName] [cite: 147]
+      # ✅ FIX: 'primary' key is nested inside 'view' and identifies which field to use for the {primary} token.
+      [cite_start]primary: studentName [cite: 149]
+      # ✅ FIX: 'sort' is an array of field names.
+      [cite_start]sort: [studentName] [cite: 151]
     fields:
       # --- Core Student Information ---
       - { name: studentName, label: Full Name, type: string, required: true }
-      - { name: profileImage, label: Profile Picture, type: image, media_folder: 'student_photos' }
+      # ✅ FIX: Changed 'media_folder' to the correct key 'path'.
+      - { name: profileImage, label: Profile Picture, type: image, options: { path: 'student_photos' } }
       - { name: birthday, label: Birthday, type: string }
 
       # --- Academic Details ---
       - name: status
         label: Academic Status
         type: select
+        # The 'values' key is correct here.
         options:
-          values: # <<< THIS IS THE FIX
+          values:
             - "Active Student"
             - "Graduated"
             - "Thesis/Internship"
@@ -38,12 +48,3 @@ content:
       - { name: impactStatement, label: Impact of Scholarship, type: rich-text, description: "Answer to 'What impact has the scholarship program had on your life?'" }
       - { name: aspirations, label: Future Aspirations, type: rich-text, description: "Answer to 'What do you want to do after finishing your degree?'" }
       - { name: obstacles, label: Obstacles Encountered, type: rich-text, description: "Answer to 'What have been your biggest obstacles?'" }
-
-    # --- CMS Settings ---
-    filename: '{year}-{month}-{day}-{slugify(studentName)}.md'
-    view:
-      fields: [studentName, status, graduationYearExpected, schoolName]
-      primary: studentName
-      sort:
-        - field: studentName
-          order: asc
