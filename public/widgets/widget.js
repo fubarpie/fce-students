@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // The URL to your compiled students.json file, with the corrected lowercase username.
+    // The URL to your compiled students.json file.
     const studentsJsonUrl = 'https://cdn.jsdelivr.net/gh/fubarpie/fce-students@main/public/students.json';
     
-    // The base URL for student profile images, also with the corrected lowercase username.
+    // The base URL for student profile images.
     const imageBaseUrl = 'https://cdn.jsdelivr.net/gh/fubarpie/fce-students@main/public/uploads/media/';
 
     /**
@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const createStudentCard = (student, index) => {
         let photoUrl;
         if (student.photo) {
-            // FIX: Extract only the filename from the path stored in the JSON.
-            // This prevents duplicating the path in the final URL.
+            // THE FIX: Extract *only* the filename from the path provided in the JSON.
+            // This prevents creating a broken URL like ".../media//uploads/media/file.jpg".
             const filename = student.photo.split('/').pop();
             photoUrl = `${imageBaseUrl}${encodeURIComponent(filename)}`;
         } else {
