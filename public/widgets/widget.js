@@ -13,11 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // The URL to your compiled students.json file.
-    // Using jsDelivr CDN is faster and better for production than hitting raw.githubusercontent.com directly.
+    // The URL to your compiled students.json file, served via jsDelivr for performance.
     const studentsJsonUrl = 'https://cdn.jsdelivr.net/gh/FUBAR-Pie/fce-students@main/public/students.json';
     
-    // The base URL for student profile images, also using the CDN.
+    // The base URL for student profile images, also served via jsDelivr.
     const imageBaseUrl = 'https://cdn.jsdelivr.net/gh/FUBAR-Pie/fce-students@main/public/uploads/media/';
 
     /**
@@ -28,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const createStudentCard = (student, index) => {
         // Use a placeholder image if a student photo is not available.
+        // The filename is URL-encoded to handle special characters like spaces.
         const photoUrl = student.photo 
             ? `${imageBaseUrl}${encodeURIComponent(student.photo)}` 
             : `https://placehold.co/400x400/EBF4FF/7F9CF5?text=${encodeURIComponent(student.studentName.charAt(0))}`;
