@@ -23,15 +23,9 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           node-version: '20'
-          # Enable caching for npm. This will speed up future runs by
-          # saving the downloaded 'gray-matter' dependency.
-          cache: 'npm'
+          # Caching has been removed. The action was failing because it could not
+          # find a 'package-lock.json' file in the repository to base the cache on.
 
-      # -----------------
-      # THE MISSING STEP
-      # -----------------
-      # This step reads the package.json file and installs the dependencies
-      # defined there (i.e., gray-matter). This is what fixes the error.
       - name: Install Dependencies
         run: npm install
 
