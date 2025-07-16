@@ -1,40 +1,14 @@
 // scripts/compile-students.js
 const fs = require('fs');
 const path = require('path');
+const matter = require('gray-matter'); // Import the gray-matter library
 
 // This script reads all .md files from 'src/content/students',
-// parses the frontmatter and content, and outputs a single students.json file.
+// parses the frontmatter using gray-matter, and outputs a single students.json file.
 
 const studentsDir = path.join(process.cwd(), 'src/content/students');
 const outputDir = path.join(process.cwd(), 'public');
 const outputFile = path.join(outputDir, 'students.json');
-
-// A simple function to parse YAML frontmatter from a markdown file.
-// This is a basic implementation. For more complex frontmatter, a library
-// like 'gray-matter' would be a better choice.
-function parseFrontmatter(fileContent) {
-    const frontmatter = {};
-    const contentLines = fileContent.split('\n');
-    if (contentLines[0].trim() === '---') {
-        let i = 1;
-        while (i < contentLines.length && contentLines[i].trim() !== '---') {
-            const line = contentLines[i];
-            const separatorIndex = line.indexOf(':');
-            if (separatorIndex > 0) {
-                const key = line.slice(0, separatorIndex).trim();
-                let value = line.slice(separatorIndex + 1).trim();
-                // Remove quotes if they exist
-                if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-                    value = value.slice(1, -1);
-                }
-                frontmatter[key] = value;
-            }
-            i++;
-        }
-    }
-    return frontmatter;
-}
-
 
 function main() {
     try {
@@ -45,12 +19,15 @@ function main() {
         const studentsData = files.map(file => {
             const filePath = path.join(studentsDir, file);
             const fileContent = fs.readFileSync(filePath, 'utf8');
-            const frontmatter = parseFrontmatter(fileContent);
+            
+            // Use gray-matter to parse the file. It correctly handles multi-line fields.
+            // It returns an object with 'data' (frontmatter) and 'content' (the rest of the file).
+            const { data } = matter(fileContent);
             
             // Add the filename as a slug, without the .md extension
-            frontmatter.slug = path.basename(file, '.md');
+            data.slug = path.basename(file, '.md');
 
-            return frontmatter;
+            return data;
         });
 
         // Ensure the output directory exists
