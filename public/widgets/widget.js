@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // The URL to your compiled students.json file, served via jsDelivr for performance.
-    const studentsJsonUrl = 'https://cdn.jsdelivr.net/gh/FUBAR-Pie/fce-students@main/public/students.json';
+    // The URL to your compiled students.json file, with the corrected lowercase username.
+    const studentsJsonUrl = 'https://cdn.jsdelivr.net/gh/fubarpie/fce-students@main/public/students.json';
     
-    // The base URL for student profile images, also served via jsDelivr.
-    const imageBaseUrl = 'https://cdn.jsdelivr.net/gh/FUBAR-Pie/fce-students@main/public/uploads/media/';
+    // The base URL for student profile images, also with the corrected lowercase username.
+    const imageBaseUrl = 'https://cdn.jsdelivr.net/gh/fubarpie/fce-students@main/public/uploads/media/';
 
     /**
      * Creates the HTML for a single student card.
