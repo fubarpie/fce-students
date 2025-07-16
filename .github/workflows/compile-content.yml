@@ -35,17 +35,17 @@ jobs:
       # STEP 1: Check out the repository code
       # -----------------
       # This action checks out your repository under $GITHUB_WORKSPACE,
-      # so your job can access it.
+      # so your job can access it. We are pinning to a specific version tag.
       - name: Check out repository
-        uses: actions/checkout@a824008085750b8e136effc585c3cd6082bd575f # v4.1.1
+        uses: actions/checkout@v4.1.1
 
       # -----------------
       # STEP 2: Set up Node.js
       # -----------------
-      # This action sets up a Node.js environment for use in your workflow.
-      # We specify version 20.x.
+      # This action sets up a Node.js environment for your workflow.
+      # We specify version 20.x and pin the action to a specific version tag.
       - name: Set up Node.js
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: '20'
           # This option enables caching for npm dependencies, which speeds up
