@@ -18,11 +18,11 @@ content:
       - name: status
         label: Academic Status
         type: select
-        options:
-          - Active Student
-          - Graduated
-          - Thesis/Internship
-          - Exam Pending
+        options: # FIX: Changed to a list of label/value objects
+          - { label: "Active Student", value: "active_student" }
+          - { label: "Graduated", value: "graduated" }
+          - { label: "Thesis/Internship", value: "thesis_internship" }
+          - { label: "Exam Pending", value: "exam_pending" }
         required: true
       - { name: schoolName, label: School / University Name, type: string }
       - { name: majorOrFieldOfStudy, label: Major or Field of Study, type: string }
@@ -39,10 +39,10 @@ content:
       - { name: obstacles, label: Obstacles Encountered, type: rich-text, description: "Answer to 'What have been your biggest obstacles?'" }
 
     # --- CMS Settings ---
-    filename: '{year}-{month}-{day}-{slugify(studentName)}.md' # Generates filenames like "2024-05-15-maria-jose-garcia.md"
+    filename: '{year}-{month}-{day}-{slugify(studentName)}.md'
     view:
-      fields: [studentName, status, graduationYearExpected, schoolName] # Fields visible in the list view
-      primary: studentName # Field used as the main identifier in the list
+      fields: [studentName, status, graduationYearExpected, schoolName]
+      primary: studentName
       sort:
         - field: studentName
-          order: asc # Default sort order
+          order: asc
