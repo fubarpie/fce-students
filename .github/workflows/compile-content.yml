@@ -48,9 +48,7 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           node-version: '20'
-          # This option enables caching for npm dependencies, which speeds up
-          # future workflow runs.
-          cache: 'npm'
+          # Caching is removed because this project has no npm dependencies.
 
       # -----------------
       # STEP 3: Run the compilation script
