@@ -5,14 +5,14 @@
  * as a grid of profile cards. It is designed to be embedded on any website.
  *
  * Author: Web Design Wizard
- * Version: 2.1.0
+ * Version: 2.2.0
  */
 (() => {
     // --- Configuration ---
     const WIDGET_CONTAINER_ID = 'student-widget-container';
-    // --- UPDATED: Fetching the JSON file directly through the reliable jsDelivr CDN ---
-    // This removes the need for an unreliable third-party CORS proxy.
-    const API_URL = 'https://cdn.jsdelivr.net/gh/fubarpie/fce-students@main/students.json';
+    // --- CORRECTED URL: Fetching the JSON file directly through the jsDelivr CDN ---
+    // This URL structure is correct and avoids the need for a third-party proxy.
+    const API_URL = 'https://cdn.jsdelivr.net/gh/fubarpie/fce-students/students.json';
 
     // --- Main function to initialize the widget ---
     const initWidget = () => {
@@ -190,7 +190,6 @@
         try {
             const response = await fetch(API_URL);
             if (!response.ok) {
-                // This will now give a more direct error if the file is not found or if there's a network issue.
                 throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
             }
             
