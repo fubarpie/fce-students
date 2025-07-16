@@ -18,11 +18,12 @@ content:
       - name: status
         label: Academic Status
         type: select
-        options: # FIX: Changed to a list of label/value objects
-          - { label: "Active Student", value: "active_student" }
-          - { label: "Graduated", value: "graduated" }
-          - { label: "Thesis/Internship", value: "thesis_internship" }
-          - { label: "Exam Pending", value: "exam_pending" }
+        options:
+          values: # <<< THIS IS THE FIX
+            - "Active Student"
+            - "Graduated"
+            - "Thesis/Internship"
+            - "Exam Pending"
         required: true
       - { name: schoolName, label: School / University Name, type: string }
       - { name: majorOrFieldOfStudy, label: Major or Field of Study, type: string }
