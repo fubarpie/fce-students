@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title or site.title }}</title>
+    <meta name="description" content="{{ description or site.description }}">
+    
+    <!-- Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Simple base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ site.title }}</h1>
+            <p class="text-gray-600 mt-1">{{ site.description }}</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Page content will be injected here -->
+            {{ content | safe }}
+        </div>
+    </main>
+
+    <footer class="bg-white mt-12">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; {{ 'now' | date: '%Y' }} {{ site.title }}. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
