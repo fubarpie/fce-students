@@ -1,14 +1,7 @@
-{
-  "name": "fce-student-content-compiler",
-  "version": "1.0.0",
-  "description": "A script to compile student markdown files into JSON.",
-  "main": "scripts/compile-students.js",
-  "scripts": {
-    "compile": "node scripts/compile-students.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "gray-matter": "^4.0.3"
-  }
+"scripts": {
+  "start": "eleventy --serve",
+  "build": "eleventy"
+},
+"devDependencies": {
+  "@11ty/eleventy": "^2.0.1"
 }
