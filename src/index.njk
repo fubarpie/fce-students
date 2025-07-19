@@ -1,0 +1,40 @@
+---
+layout: "layouts/base.njk"
+title: "Home"
+---
+
+{# This is the main container for the student profiles #}
+<div class="px-4 py-6 sm:px-0">
+    
+    {# We use a responsive grid to display the cards #}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+        {# Loop through each student in the 'students' collection #}
+        {% for student in collections.students %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                
+                {# Student Image #}
+                {# The image path comes from the 'featuredImage' front matter #}
+                {# We use the 'url' filter to correctly handle the pathPrefix for GitHub Pages #}
+                <img src="{{ student.data.featuredImage | url }}" alt="Photo of {{ student.data.studentName }}" class="w-full h-56 object-cover object-center">
+                
+                <div class="p-6">
+                    {# Student Name #}
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ student.data.studentName }}</h2>
+                    
+                    {# Graduation Year #}
+                    <p class="text-sm text-indigo-600 font-semibold mb-4">Class of {{ student.data.graduationYear }}</p>
+                    
+                    {# Student Bio/Content from Markdown file #}
+                    <div class="prose prose-sm text-gray-600">
+                        {{ student.templateContent | safe }}
+                    </div>
+
+                    {# A link to a future detail page (optional) #}
+                    {# <a href="{{ student.url | url }}" class="inline-block mt-4 text-indigo-600 hover:text-indigo-800 font-semibold">Read More</a> #}
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
