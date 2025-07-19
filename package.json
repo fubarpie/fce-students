@@ -9,19 +9,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/fce-students.git"
+    "url": "git+https://github.com/fubarpie/fce-students.git"
   },
   "keywords": [
     "eleventy",
     "static-site",
     "fce"
   ],
-  "author": "Your Name",
-  "license": "UNLICENSED",
+  "author": "Keenan Ventling",
+  "license": "GPL3",
   "bugs": {
-    "url": "https://github.com/your-username/fce-students/issues"
+    "url": "https://github.com/fubarpie/fce-students/issues"
   },
-  "homepage": "https://github.com/your-username/fce-students#readme",
+  "homepage": "https://github.com/fubarpie/fce-students#readme",
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1"
   }
