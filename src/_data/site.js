@@ -5,5 +5,5 @@ module.exports = {
   title: "FCE Student Profiles",
   description: "Meet the talented students of the FCE program.",
   // The URL for your site, used for building absolute URLs
-  url: "https://your-github-username.github.io/fce-students/", 
+  url: "https://fubarpie.github.io/fce-students/", 
 };
