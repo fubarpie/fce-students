@@ -1,7 +1,28 @@
-"scripts": {
-  "start": "eleventy --serve",
-  "build": "eleventy"
-},
-"devDependencies": {
-  "@11ty/eleventy": "^2.0.1"
+{
+  "name": "fce-students",
+  "version": "1.0.0",
+  "description": "A site to display student profiles for the FCE program.",
+  "main": "eleventy.config.js",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/fce-students.git"
+  },
+  "keywords": [
+    "eleventy",
+    "static-site",
+    "fce"
+  ],
+  "author": "Your Name",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/your-username/fce-students/issues"
+  },
+  "homepage": "https://github.com/your-username/fce-students#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1"
+  }
 }
